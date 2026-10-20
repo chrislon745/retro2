@@ -157,6 +157,35 @@ button,input{font:inherit;cursor:inherit}
 
 .spark{position:fixed;width:4px;height:12px;background:#fff;border-radius:2px;pointer-events:none;z-index:99;animation:spark .45s ease-out forwards}
 @keyframes spark{to{transform:var(--t);opacity:0}}
+
+/* ---------- Cat (British Shorthair, blau) ---------- */
+#cat{position:absolute;left:0;top:0;z-index:4;pointer-events:none;will-change:transform}
+#cat svg{pointer-events:auto;overflow:visible;display:block;transition:scale .2s}
+#cat .eyes{transform-box:fill-box;transform-origin:center;animation:catblink 4.5s infinite}
+@keyframes catblink{0%,91%,100%{scale:1 1}94%{scale:1 .08}}
+#cat .happyeyes{display:none}
+#cat.happy .eyes{display:none}
+#cat.happy .happyeyes{display:inline}
+#cat .blush{opacity:0;transition:opacity .3s}
+#cat.happy .blush{opacity:.75}
+#cat .tail{transform-box:fill-box;animation:tail 1.3s ease-in-out infinite alternate}
+@keyframes tail{from{rotate:-10deg}to{rotate:12deg}}
+#cat.walk .leg{transform-box:fill-box;transform-origin:50% 0;animation:step .3s ease-in-out infinite alternate}
+#cat.walk .l2{animation-delay:-.3s}
+@keyframes step{from{rotate:-20deg}to{rotate:20deg}}
+#cat.hang svg{transform-origin:50% 4%;animation:swing 1.7s ease-in-out infinite alternate}
+@keyframes swing{from{rotate:-7deg}to{rotate:7deg}}
+#cat.hang .kick{transform-box:fill-box;transform-origin:50% 0;animation:kick .45s ease-in-out infinite alternate}
+#cat.hang .k2{animation-delay:-.45s}
+@keyframes kick{from{rotate:-14deg}to{rotate:14deg}}
+#cat.hop svg{animation:hop .5s ease-out}
+@keyframes hop{40%{translate:0 -46px}100%{translate:0 0}}
+#cat.dance.sit svg{animation:dance .536s ease-in-out infinite}
+@keyframes dance{0%,100%{translate:0 0;rotate:0deg}25%{translate:0 -8px;rotate:-6deg}75%{translate:0 -8px;rotate:6deg}}
+.heart{position:absolute;color:#ff7ab8;font-size:24px;pointer-events:none;z-index:5;text-shadow:0 0 8px rgba(255,122,184,.6);animation:heart 1.3s ease-out forwards}
+@keyframes heart{to{translate:var(--dx) -90px;opacity:0;scale:1.4}}
+.bubble{position:absolute;z-index:5;pointer-events:none;background:#fff;color:#111;font-family:"Press Start 2P";font-size:11px;padding:7px 9px;border-radius:10px;white-space:nowrap;animation:toast 1.3s forwards;translate:-50% 0}
+.bubble::after{content:"";position:absolute;left:50%;bottom:-7px;margin-left:-6px;border:6px solid transparent;border-top-color:#fff;border-bottom:0}
 </style>
 </head>
 <body>
@@ -268,10 +297,11 @@ button,input{font:inherit;cursor:inherit}
     <button id="coin" aria-label="Münze einwerfen"></button>
     <div id="credit">CREDIT 00</div>
     <div id="fade"></div>
+    <div id="cat"></div>
   </div>
 
   <button id="mute" aria-label="Ton an/aus">🔊</button>
-  <div id="hint">← → JOYSTICK · BUTTONS = SOUND · COIN = CREDIT</div>
+  <div id="hint">← → JOYSTICK · BUTTONS = SOUND · COIN = CREDIT · KATZE = STREICHELN</div>
 </div>
 </div>
 
@@ -449,6 +479,111 @@ addEventListener('pointerdown',e=>{burst(e.clientX,e.clientY,6)});
 /* ===== Mute ===== */
 const muteBtn=document.getElementById('mute');
 muteBtn.onclick=()=>{muted=!muted;muteBtn.textContent=muted?'🔇':'🔊';if(muted)stopLoop();else sfx.click()};
+
+/* ===== Cat ===== */
+const F='#7b818c',FD='#676d78',FL='#a2a7b0',EAR='#b0939a',EYE='#f0a820';
+function face(cx,cy){const e=(x)=>`<g transform="translate(${x} ${cy-2})"><circle r="7.6" fill="${EYE}"/><circle r="7.6" fill="none" stroke="#c98612" stroke-width="1.2"/>
+    <g class="pupil"><ellipse rx="2.3" ry="5.6" fill="#24180a"/><circle cx="2.4" cy="-2.6" r="1.9" fill="#fff"/></g></g>`;
+  return `<g>
+  <path d="M${cx-25} ${cy-6}L${cx-21} ${cy-29}L${cx-5} ${cy-21}Z" fill="${F}" stroke="${F}" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M${cx+25} ${cy-6}L${cx+21} ${cy-29}L${cx+5} ${cy-21}Z" fill="${F}" stroke="${F}" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M${cx-21} ${cy-11}L${cx-19} ${cy-24}L${cx-10} ${cy-19}Z" fill="${EAR}"/>
+  <path d="M${cx+21} ${cy-11}L${cx+19} ${cy-24}L${cx+10} ${cy-19}Z" fill="${EAR}"/>
+  <ellipse cx="${cx}" cy="${cy}" rx="29" ry="24.5" fill="${F}"/>
+  <ellipse cx="${cx-13}" cy="${cy+9}" rx="13" ry="9" fill="${FL}" opacity=".35"/>
+  <ellipse cx="${cx+13}" cy="${cy+9}" rx="13" ry="9" fill="${FL}" opacity=".35"/>
+  <path d="M${cx-6} ${cy-20}q6 -3 12 0" stroke="${FD}" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <g class="eyes">${e(cx-11)}${e(cx+11)}</g>
+  <g class="happyeyes" stroke="#3a3f48" stroke-width="2.6" fill="none" stroke-linecap="round">
+    <path d="M${cx-17} ${cy-1}q6 -7 12 0"/><path d="M${cx+5} ${cy-1}q6 -7 12 0"/></g>
+  <ellipse class="blush" cx="${cx-17}" cy="${cy+8}" rx="5" ry="3" fill="#f39ab4"/>
+  <ellipse class="blush" cx="${cx+17}" cy="${cy+8}" rx="5" ry="3" fill="#f39ab4"/>
+  <path d="M${cx-3.5} ${cy+6}h7l-3.5 3.6z" fill="#565c67" stroke="#565c67" stroke-width="1.5" stroke-linejoin="round"/>
+  <path d="M${cx} ${cy+9.6}q-3 4 -6.5 1.4M${cx} ${cy+9.6}q3 4 6.5 1.4" stroke="#4a505a" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+  <g stroke="#e6e8ec" stroke-width=".9" opacity=".75" stroke-linecap="round">
+    <path d="M${cx-9} ${cy+9}l-24 -4M${cx-9} ${cy+11}l-23 3M${cx+9} ${cy+9}l24 -4M${cx+9} ${cy+11}l23 3"/></g>
+  </g>`}
+const CAT={
+  walk:{w:130,h:100,svg:`<svg viewBox="0 0 130 100" width="130" height="100">
+    <g class="tail" style="transform-origin:100% 100%"><path d="M30 60C12 58 4 40 13 22" fill="none" stroke="${FD}" stroke-width="12" stroke-linecap="round"/></g>
+    <rect class="leg l1" x="30" y="70" width="13" height="28" rx="6.5" fill="${FD}"/>
+    <rect class="leg l2" x="78" y="70" width="13" height="28" rx="6.5" fill="${FD}"/>
+    <ellipse cx="62" cy="66" rx="41" ry="24" fill="${F}"/>
+    <ellipse cx="68" cy="77" rx="25" ry="10" fill="${FL}" opacity=".4"/>
+    <rect class="leg l2" x="42" y="72" width="13" height="27" rx="6.5" fill="${F}"/>
+    <rect class="leg l1" x="91" y="72" width="13" height="27" rx="6.5" fill="${F}"/>
+    ${face(98,40)}</svg>`},
+  sit:{w:110,h:110,svg:`<svg viewBox="0 0 110 110" width="110" height="110">
+    <g class="tail" style="transform-origin:0% 100%"><path d="M70 104C100 106 106 84 94 72" fill="none" stroke="${FD}" stroke-width="11" stroke-linecap="round"/></g>
+    <ellipse cx="52" cy="80" rx="34" ry="28" fill="${F}"/>
+    <ellipse cx="52" cy="80" rx="17" ry="19" fill="${FL}" opacity=".4"/>
+    <ellipse cx="40" cy="105" rx="9.5" ry="6" fill="${F}" stroke="${FD}" stroke-width="1"/>
+    <ellipse cx="64" cy="105" rx="9.5" ry="6" fill="${F}" stroke="${FD}" stroke-width="1"/>
+    ${face(52,42)}</svg>`},
+  hang:{w:110,h:150,svg:`<svg viewBox="0 0 110 150" width="110" height="150">
+    <g class="tail" style="transform-origin:0% 0%"><path d="M56 116C58 138 76 142 82 128" fill="none" stroke="${FD}" stroke-width="11" stroke-linecap="round"/></g>
+    <rect class="kick k1" x="36" y="106" width="13" height="32" rx="6.5" fill="${FD}"/>
+    <rect class="kick k2" x="61" y="106" width="13" height="32" rx="6.5" fill="${FD}"/>
+    <ellipse cx="55" cy="92" rx="26" ry="32" fill="${F}"/>
+    <ellipse cx="55" cy="96" rx="14" ry="20" fill="${FL}" opacity=".4"/>
+    <rect x="22" y="6" width="14" height="46" rx="7" fill="${F}"/>
+    <rect x="74" y="6" width="14" height="46" rx="7" fill="${F}"/>
+    <ellipse cx="29" cy="8" rx="11" ry="7" fill="${F}" stroke="${FD}" stroke-width="1"/>
+    <ellipse cx="81" cy="8" rx="11" ry="7" fill="${F}" stroke="${FD}" stroke-width="1"/>
+    <path d="M26 4v5M31 4v5M78 4v5M83 4v5" stroke="${FD}" stroke-width="1.2" stroke-linecap="round"/>
+    ${face(55,50)}</svg>`},
+};
+const catEl=document.getElementById('cat'),arcadeEl=document.getElementById('arcade');
+const cat={mode:'',x:250,dir:1,target:250,next:'think',until:0,side:0,t:0};
+function setMode(m){if(cat.mode===m)return;cat.mode=m;catEl.classList.remove('walk','sit','hang');catEl.classList.add(m);catEl.innerHTML=CAT[m].svg;
+  const svg=catEl.querySelector('svg');
+  svg.addEventListener('pointerenter',()=>{catEl.classList.add('happy');purr(true)});
+  svg.addEventListener('pointerleave',()=>{catEl.classList.remove('happy');purr(false)});
+  svg.addEventListener('pointerdown',e=>{e.stopPropagation();petCat()})}
+function catPos(){const m=CAT[cat.mode];
+  if(cat.mode==='hang')return[(cat.side<0?8:505)-m.w/2,-8];
+  return[cat.x-m.w/2,-m.h+3]}
+function think(now){const r=Math.random();
+  if(r<.4){cat.target=70+Math.random()*375;cat.next=Math.random()<.5?'sit':'think';setMode('walk')}
+  else if(r<.65){setMode('sit');cat.until=now+3000+Math.random()*4000}
+  else{cat.side=Math.random()<.5?-1:1;cat.target=cat.side<0?62:451;cat.next='hang';setMode('walk')}}
+let lastT=performance.now();
+function catLoop(now){const dt=Math.min(.05,(now-lastT)/1000);lastT=now;
+  if(cat.mode==='walk'){const d=cat.target-cat.x;cat.dir=Math.sign(d)||cat.dir;cat.x+=Math.sign(d)*Math.min(Math.abs(d),62*dt);
+    if(Math.abs(cat.target-cat.x)<1){if(cat.next==='hang'){setMode('hang');cat.until=now+5000+Math.random()*4000;meow(1.15)}
+      else if(cat.next==='sit'){setMode('sit');cat.until=now+3000+Math.random()*4000}else think(now)}}
+  else if(now>cat.until){if(cat.mode==='hang'){cat.x=cat.side<0?75:438;cat.target=cat.x-cat.side*(80+Math.random()*120);cat.next='sit';setMode('walk')}else think(now)}
+  const[l,t]=catPos();const bob=cat.mode==='walk'?Math.abs(Math.sin(now/150))*-2.5:0;
+  catEl.style.transform=`translate(${l}px,${t+bob}px)`;
+  const svg=catEl.querySelector('svg');if(svg)svg.style.scale=cat.mode==='walk'?`${cat.dir} 1`:'1 1';
+  catEl.classList.toggle('dance',loopOn);
+  requestAnimationFrame(catLoop)}
+// pupils follow the pointer
+addEventListener('pointermove',e=>{const r=catEl.getBoundingClientRect(),dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/3),d=Math.hypot(dx,dy)||1;
+  const f=cat.mode==='walk'?cat.dir:1;catEl.querySelectorAll('.pupil').forEach(p=>p.setAttribute('transform',`translate(${dx/d*2.6*f} ${dy/d*2})`))});
+
+function meow(p=1){if(muted)return;const a=audio(),t=a.currentTime;const o=a.createOscillator(),f=a.createBiquadFilter(),g=a.createGain();
+  o.type='sawtooth';o.frequency.setValueAtTime(520*p,t);o.frequency.linearRampToValueAtTime(840*p,t+.15);o.frequency.linearRampToValueAtTime(470*p,t+.55);
+  f.type='bandpass';f.Q.value=4;f.frequency.setValueAtTime(900,t);f.frequency.linearRampToValueAtTime(1900,t+.15);f.frequency.linearRampToValueAtTime(700,t+.55);
+  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.55,t+.06);g.gain.exponentialRampToValueAtTime(.0001,t+.6);
+  o.connect(f).connect(g).connect(master);o.start(t);o.stop(t+.65)}
+let purrNode=null;
+function purr(on){if(on&&!purrNode&&!muted){const a=audio(),b=a.createBuffer(1,a.sampleRate,a.sampleRate),c=b.getChannelData(0);for(let i=0;i<c.length;i++)c[i]=Math.random()*2-1;
+    const s=a.createBufferSource(),lp=a.createBiquadFilter(),g=a.createGain(),lfo=a.createOscillator(),lg=a.createGain();
+    s.buffer=b;s.loop=true;lp.type='lowpass';lp.frequency.value=230;g.gain.value=.16;lfo.frequency.value=24;lg.gain.value=.16;
+    lfo.connect(lg).connect(g.gain);s.connect(lp).connect(g).connect(master);s.start();lfo.start();purrNode={s,lfo,g}}
+  else if(!on&&purrNode){const p=purrNode,a=audio();purrNode=null;p.g.gain.setTargetAtTime(0,a.currentTime,.05);setTimeout(()=>{p.s.stop();p.lfo.stop()},300)}}
+function catFx(text){const[l,t]=catPos(),cx=l+CAT[cat.mode].w/2;
+  for(let i=0;i<5;i++){const h=document.createElement('div');h.className='heart';h.textContent='♥';h.style.left=cx-10+'px';h.style.top=t+10+'px';
+    h.style.setProperty('--dx',(Math.random()*80-40)+'px');h.style.animationDelay=i*.08+'s';arcadeEl.appendChild(h);setTimeout(()=>h.remove(),1700)}
+  const b=document.createElement('div');b.className='bubble';b.textContent=text;b.style.left=cx+'px';b.style.top=t-34+'px';arcadeEl.appendChild(b);setTimeout(()=>b.remove(),1300)}
+function hop(){catEl.classList.remove('hop');void catEl.offsetWidth;catEl.classList.add('hop');setTimeout(()=>catEl.classList.remove('hop'),520)}
+function petCat(){meow(.9+Math.random()*.3);catFx(['Miau!','Mrrp?','Miaaau','Prrr ♥'][Math.floor(Math.random()*4)]);
+  catEl.classList.add('happy');setTimeout(()=>{if(!catEl.querySelector('svg:hover'))catEl.classList.remove('happy')},1500);
+  if(cat.mode==='hang')cat.until=0;else{if(cat.mode==='walk'){setMode('sit');cat.until=performance.now()+3500}hop()}}
+const _coin=insertCoin;insertCoin=function(){_coin();setTimeout(()=>{if(cat.mode!=='hang'){hop();catFx('Ooh!')}},150)};
+document.getElementById('coin').onclick=insertCoin;
+setMode('sit');cat.until=performance.now()+2500;requestAnimationFrame(catLoop);
 
 show('contact',true);
 </script>
